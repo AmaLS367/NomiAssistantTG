@@ -3,16 +3,12 @@ services:
     build: .
     container_name: nomi_assistant
     restart: unless-stopped
-    # Load environment variables from .env file
     env_file:
       - .env
     environment:
-      # Override paths for Docker logic
       - VOSK_MODEL_PATH=/app/models/vosk-model
       - DB_PATH=/app/data/app.db
     volumes:
-      # Persist data (logs, db)
       - ./data:/app/data
-      # Mount models from host to container
       - ./models/vosk-small-en:/app/models/vosk-model:ro
 
