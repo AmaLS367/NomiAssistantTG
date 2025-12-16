@@ -1,9 +1,9 @@
 import os
 import json
 import subprocess
+import shutil
 from typing import Optional
 from vosk import Model, KaldiRecognizer
-import imageio_ffmpeg
 
 class SttNotConfigured(Exception):
     pass
@@ -14,22 +14,27 @@ def _get_model() -> Model:
     global _model
     if _model is not None:
         return _model
-    model_path = os.getenv("VOSK_MODEL_PATH", "").strip()
+    # Default docker path or env override
+    model_path = os.getenv("VOSK_MODEL_PATH", "/app/models/vosk-model").strip()
     if not model_path or not os.path.isdir(model_path):
-        raise SttNotConfigured("VOSK_MODEL_PATH not set or invalid")
-    _model = Model(model_path)  # EN model supported
+        raise SttNotConfigured(f"VOSK_MODEL_PATH invalid: {model_path}")
+    _model = Model(model_path)
     return _model
 
 def _ffmpeg_path() -> str:
+    # Explicit override
     p = os.getenv("FFMPEG_BIN", "").strip()
     if p:
-        if not os.path.isfile(p):
+        if not os.path.isfile(p) and not shutil.which(p):
             raise SttNotConfigured(f"FFMPEG_BIN points to non-file: {p}")
         return p
-    p = imageio_ffmpeg.get_ffmpeg_exe()
-    if not p or not os.path.exists(p):
-        raise SttNotConfigured("FFmpeg not available (imageio-ffmpeg cache missing).")
-    return p
+    
+    # System binary
+    system_ffmpeg = shutil.which("ffmpeg")
+    if system_ffmpeg:
+        return system_ffmpeg
+        
+    raise SttNotConfigured("FFmpeg not found in PATH. Install ffmpeg package.")
 
 def _decode_to_pcm16_mono16k_ffmpeg(data: bytes) -> bytes:
     ffmpeg_bin = _ffmpeg_path()
