@@ -9,7 +9,6 @@
 [![CI Quality](https://img.shields.io/github/actions/workflow/status/AmaLS367/Nomi_ai_tg/quality.yml?style=for-the-badge&logo=github&label=Quality&color=blueviolet)](https://github.com/AmaLS367/Nomi_ai_tg/actions)
 [![Docker Build](https://img.shields.io/github/actions/workflow/status/AmaLS367/Nomi_ai_tg/docker.yml?style=for-the-badge&logo=docker&label=Build&color=blue)](https://github.com/AmaLS367/Nomi_ai_tg/actions)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg?style=for-the-badge)](https://github.com/astral-sh/ruff)
 
 <p align="center">
@@ -321,9 +320,10 @@ Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for:
 - Architecture guidelines
 - Commit message conventions
 
-## 📄 License
+## 💼 Commercial License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This software is proprietary and confidential. Unauthorized copying, distribution, or use is strictly prohibited.
+To obtain a commercial license or usage rights, please contact the author.
 
 ## 🙏 Acknowledgments
 
