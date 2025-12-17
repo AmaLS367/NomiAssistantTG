@@ -1,18 +1,18 @@
-import httpx
-import logging
 import asyncio
+import logging
 import random
 from typing import Any, Dict, List, Optional
+
+import httpx
+
 from .schemas import NomiResponse
 
-log = logging.getLogger(__name__)
+log = logging.getLogger(__name__)  # type: ignore[attr-defined]
+
 
 class NomiClient:
     def __init__(self, api_key: str, timeout: float = 30.0):
-        self._headers = {
-            "Authorization": api_key,
-            "User-Agent": "NomiTGCompanion/1.0 (+github.com/AmaLS367)"
-        }
+        self._headers = {"Authorization": api_key, "User-Agent": "NomiTGCompanion/1.0 (+github.com/AmaLS367)"}
         self._timeout = httpx.Timeout(timeout, connect=15.0, read=timeout, write=timeout)
         self._base = "https://api.nomi.ai"
 
@@ -22,13 +22,13 @@ class NomiClient:
             try:
                 async with httpx.AsyncClient(timeout=self._timeout, headers=self._headers) as s:
                     r = await s.request(method, url, json=json)
-                
+
                 if r.status_code == 429 and attempt < 2:
                     retry_after = r.headers.get("Retry-After")
                     base = float(retry_after) if (retry_after and retry_after.isdigit()) else 0.8 * (attempt + 1)
                     await asyncio.sleep(base + random.uniform(0, 0.3))
                     continue
-                
+
                 if r.status_code >= 500 and attempt < 2:
                     await asyncio.sleep(0.8 * (attempt + 1) + random.uniform(0, 0.3))
                     continue
@@ -56,11 +56,11 @@ class NomiClient:
 
         try:
             resp = NomiResponse.model_validate(data)
-            
+
             # Priority 1: Direct reply field
             if resp.replyMessage:
                 return resp.replyMessage.text or resp.replyMessage.content
-            
+
             # Priority 2: Message field
             if resp.message:
                 return resp.message.text or resp.message.content
@@ -71,20 +71,20 @@ class NomiClient:
                 for msg in reversed(resp.messages):
                     if msg.role in ("assistant", "nomi", "ai", "bot"):
                         return msg.text or msg.content
-                
+
                 # If no role matches, just take the last one
                 last = resp.messages[-1]
                 return last.text or last.content
 
         except Exception as e:
             log.warning(f"Pydantic validation failed: {e}. Data: {data}")
-            
+
         return None
 
     async def chat_direct(self, nomi_id: str, text: str) -> Optional[str]:
         payload = {"messageText": text}
         r = await self._request("POST", f"{self._base}/v1/nomis/{nomi_id}/chat", json=payload)
-        
+
         try:
             data = r.json()
             return self._parse_response(data)

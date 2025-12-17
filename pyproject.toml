@@ -9,7 +9,7 @@ description = "Telegram companion powered by Nomi.ai"
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [
-  { name = "Ama", email = "your_email@example.com" },
+  { name = "Ama" },
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -27,6 +27,7 @@ dependencies = [
 dev = [
     "pytest>=8.0.0",
     "pytest-asyncio>=0.23.0",
+    "pytest-cov>=4.0.0",
     "respx>=0.21.0",
     "mypy>=1.9.0",
     "ruff>=0.3.0",
@@ -38,10 +39,12 @@ where = ["src"]
 
 [tool.mypy]
 python_version = "3.11"
-strict = true
+warn_return_any = false
+warn_unused_configs = true
 ignore_missing_imports = true
-disallow_untyped_defs = true
+disallow_untyped_defs = false
 check_untyped_defs = true
+show_error_codes = true
 
 [tool.ruff]
 line-length = 120

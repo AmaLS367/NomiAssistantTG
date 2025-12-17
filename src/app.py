@@ -1,13 +1,16 @@
 import asyncio
 import logging
+
 from aiogram import Dispatcher
-from core.config import get_settings
-from core.logging import setup_logging
+
 from bot.app_bot import create_bot
 from bot.handlers import commands as commands_handlers
 from bot.handlers import messages as messages_handlers
+from core.config import get_settings
+from core.logging import setup_logging
 from nomi.client import NomiClient
 from nomi.service import NomiService
+
 
 async def _main():
     s = get_settings()
@@ -28,8 +31,10 @@ async def _main():
         logging.getLogger(__name__).info("shutdown")
         raise
 
+
 def main():
     asyncio.run(_main())
+
 
 if __name__ == "__main__":
     main()

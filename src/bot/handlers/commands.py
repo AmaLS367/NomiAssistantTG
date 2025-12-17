@@ -1,9 +1,11 @@
 from aiogram import Router
-from aiogram.types import Message
 from aiogram.filters import Command, CommandStart
+from aiogram.types import Message
+
 from nomi.service import NomiService
 
 router = Router()
+
 
 def setup(service: NomiService) -> Router:
     @router.message(CommandStart())
@@ -28,7 +30,9 @@ def setup(service: NomiService) -> Router:
             "/start - connect and show info\n"
             "/status - show active Nomi\n\n"
             "Images and media:\n"
-            "Nomi API does not accept direct file uploads. Send a file URL in the message or in the caption, for example https://example.com/image.jpg. I will forward it."
+            "Nomi API does not accept direct file uploads. "
+            "Send a file URL in the message or in the caption, "
+            "for example https://example.com/image.jpg. I will forward it."
         )
 
     return router

@@ -1,9 +1,12 @@
 import os
-from pydantic import BaseModel
+
 from dotenv import load_dotenv
+from pydantic import BaseModel
+
 from .errors import ConfigError
 
 load_dotenv()
+
 
 class Settings(BaseModel):
     telegram_bot_token: str
@@ -13,6 +16,7 @@ class Settings(BaseModel):
     request_timeout_sec: float = 30.0
     rate_limit_rps: float = 0.4
     db_path: str = "./data/app.db"
+
 
 def get_settings() -> Settings:
     s = Settings(

@@ -1,5 +1,7 @@
-from typing import Optional, Tuple, List, Dict, Any
+from typing import Any, Dict, List, Optional, Tuple
+
 from .client import NomiClient
+
 
 class NomiService:
     def __init__(self, client: NomiClient, default_nomi_id: Optional[str]):

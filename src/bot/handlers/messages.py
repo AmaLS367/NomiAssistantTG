@@ -1,19 +1,23 @@
 import os
+
 import httpx
-from aiogram import Router, F
+from aiogram import F, Router
 from aiogram.types import Message
+
 from nomi.service import NomiService
-from stt.vosk_stt import transcribe_bytes, SttNotConfigured
+from stt.vosk_stt import SttNotConfigured, transcribe_bytes
 
 router = Router()
 
 MAX_AUDIO_BYTES = int(os.getenv("MAX_AUDIO_BYTES", "10485760"))  # 10 MB
+
 
 def _trim(s: str, n: int = 4000) -> str:
     s = (s or "").strip()
     if len(s) > n:
         return s[: n - 1] + "…"
     return s
+
 
 async def _download_tg_file(bot, file_id: str) -> tuple[bytes, str]:
     f = await bot.get_file(file_id)
@@ -26,10 +30,12 @@ async def _download_tg_file(bot, file_id: str) -> tuple[bytes, str]:
     name = (path.rsplit("/", 1)[-1]) or "audio"
     return data, name
 
+
 async def _send_and_reply(m: Message, service: NomiService, text: str):
     reply = await service.send(text)
     reply = _trim(reply) or "No response."
     await m.answer(reply)
+
 
 def setup(service: NomiService) -> Router:
     @router.message(F.text)
@@ -53,7 +59,6 @@ def setup(service: NomiService) -> Router:
             await m.answer("Timeout. Please try again.")
         except Exception:
             await m.answer("Something went wrong. Please try again.")
-
 
     @router.message(F.voice)
     async def on_voice(m: Message):
@@ -81,10 +86,10 @@ def setup(service: NomiService) -> Router:
     @router.message(F.audio)
     async def on_audio(m: Message):
         audio = m.audio
-        
+
         if audio is None:
-             return
-         
+            return
+
         size = audio.file_size or 0
         if size > MAX_AUDIO_BYTES:
             await m.answer("Audio file is too large.")
